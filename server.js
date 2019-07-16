@@ -12,13 +12,14 @@ app.use(bodyParser.json());
 const port = process.env.PORT || 5001;
 
 app.get('/', (req, res) => {
+  let resdata = [];
   fs.createReadStream('./utils/data.csv')
     .pipe(csv())
-    .on('data', (row) => {
-      console.log(row);
+    .on('data', (data) => {
+      resdata.push(data);
     })
     .on('end', () => {
-      console.log('CSV file successfully processed');
+      res.send(resdata)
     });
 });
 
