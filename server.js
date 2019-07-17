@@ -16,19 +16,40 @@ const port = process.env.PORT || 5001;
 //set storage engine
 const storage = multer.diskStorage({
   destination: './public/uploads/',
-  filename: function (req, file, callback) {
+  filename: (req, file, callback) => {
     callback(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
   }
 });
 
 const upload = multer({
-  storage: storage
-}).single('csvfile')
+  storage: storage,
+  fileFilter: (req, file, callback) => {
+    checkFileType(file, callback)
+  }
+}).single('csvfile');
+
+const checkFileType = (file, callback) => {
+  //allowed extensions
+  const filetypes = /csv/;
+  //check extension
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+  //check mimetype
+  const mimetype = filetypes.test(file.mimetype);
+
+  if (mimetype && extname) {
+    return callback(null, true);
+  }
+  else {
+    callback('Error: only csv files are allowed');
+  }
+}
 
 app.post('/', (req, res) => {
-  console.log('abc', req);
+  // console.log('abc', req);
   upload(req, res, (err) => {
+    // console.log('req', req)
     if (err) {
+      console.log('error');
       res.json({
         error: err
       })
@@ -42,7 +63,7 @@ app.post('/', (req, res) => {
           resdata.push(data);
         })
         .on('end', () => {
-          res.send(resdata)
+          res.json({ response: resdata });
         });
     }
   })

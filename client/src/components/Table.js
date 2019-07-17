@@ -2,24 +2,11 @@ import React, { Component } from 'react';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 
+
+const style = {
+  marginTop: '24px'
+}
 class Table extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      array: [{
-        "Date": "Jul 19",
-        "Price": "68.565"
-      },
-      {
-        "Date": "Jun 19",
-        "Price": "68.950"
-      },
-      {
-        "Date": "May 19",
-        "Price": "69.580"
-      }]
-    }
-  }
   render() {
     const columns = [
       {
@@ -34,7 +21,8 @@ class Table extends Component {
     return (
       <ReactTable
         columns={columns}
-        data={this.state.array}
+        data={this.props.data}
+        style={style}
       ></ReactTable>
     )
   }
