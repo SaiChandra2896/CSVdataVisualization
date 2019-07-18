@@ -40,14 +40,19 @@ const checkFileType = (file, callback) => {
     return callback(null, true);
   }
   else {
-    callback('Error: only csv files are allowed');
+    callback('only csv files are allowed');
   }
 }
 
 app.post('/', (req, res) => {
-  // console.log('abc', req);
   upload(req, res, (err) => {
-    // console.log('req', req)
+    console.log('req', req.body)
+    // if (req.file === undefined) {
+    //   res.json({
+    //     msg: 'feild cannot be empty'
+    //   })
+    // }
+
     if (err) {
       console.log('error');
       res.json({
@@ -55,7 +60,6 @@ app.post('/', (req, res) => {
       })
     }
     else {
-      console.log('check', req.file);
       let resdata = [];
       fs.createReadStream(req.file.destination + req.file.filename)
         .pipe(csv())
